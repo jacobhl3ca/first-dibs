@@ -11,6 +11,7 @@ type Show = {
   city: string;
   url: string;
   price: number | null;
+  announced: string;
   src: string;
 };
 
@@ -41,17 +42,26 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [blurbs, setBlurbs] = useState<Record<string, string>>({});
   const [voicing, setVoicing] = useState<string | null>(null);
+  const [sortMode, setSortMode] = useState<"soonest" | "announced">("soonest");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const didAuto = useRef(false);
 
-  // load saved artists
+  // load saved artists, then auto-search once so the page never shows an empty box
   useEffect(() => {
+    let list = SEED;
+    let c = "nyc";
     try {
       const s = JSON.parse(localStorage.getItem("fd_artists") || "null");
-      setArtists(Array.isArray(s) && s.length ? s : SEED);
-      setCity(localStorage.getItem("fd_city") || "nyc");
-    } catch {
-      setArtists(SEED);
+      if (Array.isArray(s) && s.length) list = s;
+      c = localStorage.getItem("fd_city") || "nyc";
+    } catch {}
+    setArtists(list);
+    setCity(c);
+    if (!didAuto.current) {
+      didAuto.current = true;
+      findShows(list, c);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     if (artists.length) localStorage.setItem("fd_artists", JSON.stringify(artists));
@@ -68,7 +78,7 @@ export default function Home() {
     setInput("");
   }
 
-  async function findShows() {
+  async function findShows(artistList: string[] = artists, cityKey: string = city) {
     setLoading(true);
     setShows(null);
     setBlurbs({});
@@ -76,7 +86,7 @@ export default function Home() {
       const r = await fetch("/api/shows", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ artists, city }),
+        body: JSON.stringify({ artists: artistList, city: cityKey }),
       });
       const j = await r.json();
       const list: Show[] = j.shows || [];
@@ -114,7 +124,7 @@ export default function Home() {
         body: JSON.stringify({ text }),
       });
       if (!r.ok) {
-        alert("Voice not configured yet (add ELEVENLABS_API_KEY).");
+        alert("Voice preview isn't enabled yet (needs an ElevenLabs key).");
         return;
       }
       const blob = await r.blob();
@@ -126,6 +136,29 @@ export default function Home() {
     } finally {
       setVoicing(null);
     }
+  }
+
+  // group shows by artist, then order groups by the active sort
+  function buildGroups(list: Show[]) {
+    const groups: { artist: string; shows: Show[] }[] = [];
+    const idx: Record<string, number> = {};
+    for (const s of list) {
+      if (idx[s.artist] === undefined) {
+        idx[s.artist] = groups.length;
+        groups.push({ artist: s.artist, shows: [] });
+      }
+      groups[idx[s.artist]].shows.push(s);
+    }
+    if (sortMode === "announced") {
+      groups.sort((a, b) => {
+        const am = a.shows.reduce((m, s) => (s.announced > m ? s.announced : m), "");
+        const bm = b.shows.reduce((m, s) => (s.announced > m ? s.announced : m), "");
+        return bm.localeCompare(am); // most recently announced first
+      });
+    } else {
+      groups.sort((a, b) => a.shows[0].date.localeCompare(b.shows[0].date)); // soonest first
+    }
+    return groups;
   }
 
   return (
@@ -159,34 +192,41 @@ export default function Home() {
           ))}
         </div>
         <div className="row" style={{ marginTop: 16 }}>
-          <button onClick={findShows} disabled={loading || artists.length === 0}>
+          <button onClick={() => findShows()} disabled={loading || artists.length === 0}>
             {loading ? <><span className="spin" /> Finding shows…</> : "Find my shows"}
           </button>
           <span className="muted">{artists.length} artists · saved on this device</span>
         </div>
       </div>
 
-      {shows && shows.length > 0 && (() => {
-        // group by artist so one artist = one card with multiple showtime buttons
-        const groups: { artist: string; shows: Show[] }[] = [];
-        const idx: Record<string, number> = {};
-        for (const s of shows) {
-          if (idx[s.artist] === undefined) {
-            idx[s.artist] = groups.length;
-            groups.push({ artist: s.artist, shows: [] });
-          }
-          groups[idx[s.artist]].shows.push(s);
-        }
-        return (
+      {shows && shows.length > 0 && (
+        <>
+          <div className="sortbar">
+            <button
+              className={"seg" + (sortMode === "soonest" ? " on" : "")}
+              onClick={() => setSortMode("soonest")}
+            >
+              ⏱ Soonest
+            </button>
+            <button
+              className={"seg" + (sortMode === "announced" ? " on" : "")}
+              onClick={() => setSortMode("announced")}
+            >
+              ✨ Just announced
+            </button>
+          </div>
           <div className="cards">
-            {groups.map((g, gi) => {
+            {buildGroups(shows).map((g, gi) => {
               const soonest = g.shows[0];
+              const featLabel = sortMode === "announced" ? "✨ New" : "🔥 Soon";
               return (
                 <div className={"show" + (gi < 3 ? " feat" : "")} key={g.artist}>
-                  {gi < 3 && <span className="badge">🔥 Soon</span>}
+                  {gi < 3 && <span className="badge">{featLabel}</span>}
                   <div className="top">
                     <div>
-                      <div className="artist">{g.artist}</div>
+                      <a className="artist" href={soonest.url} target="_blank" rel="noreferrer" title={`Tickets for ${g.artist}`}>
+                        {g.artist}
+                      </a>
                       <div className="venue">{g.shows.length} upcoming {g.shows.length === 1 ? "show" : "shows"} near you</div>
                     </div>
                     <div className="date">{fmtDate(soonest.date)}</div>
@@ -218,8 +258,8 @@ export default function Home() {
               );
             })}
           </div>
-        );
-      })()}
+        </>
+      )}
 
       {shows && shows.length === 0 && (
         <div className="empty">No upcoming shows found for these artists near {CITY_OPTS.find((c) => c[0] === city)?.[1]}. Try adding more artists or another city.</div>

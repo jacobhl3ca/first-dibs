@@ -54,7 +54,11 @@ button:disabled { opacity: 0.5; cursor: default; }
 .st-src { font-size: 11px; color: var(--good); background: #14271a; border-radius: 5px; padding: 1px 6px; }
 .st-go { font-size: 13px; font-weight: 600; color: var(--acc2); }
 .show .top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
-.show .artist { font-size: 18px; font-weight: 700; }
+.show .artist { font-size: 18px; font-weight: 700; color: var(--ink); text-decoration: none; display: inline-block; }
+a.artist:hover { color: var(--acc2); text-decoration: underline; cursor: pointer; }
+.sortbar { display: flex; gap: 8px; margin: 0 0 14px; }
+.seg { background: #1b1f28; color: var(--mut); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.seg.on { background: linear-gradient(90deg, var(--acc), var(--acc2)); color: #fff; border-color: transparent; }
 .show .date { color: var(--acc2); font-weight: 600; white-space: nowrap; }
 .show .venue { color: var(--mut); margin-top: 2px; }
 .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
