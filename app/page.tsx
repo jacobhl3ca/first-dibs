@@ -26,7 +26,12 @@ const CITY_OPTS = [
   ["dc", "Washington DC"],
 ];
 
-const SEED = ["Brian Blade", "Yussef Dayes", "Tom Misch", "Kamasi Washington"];
+// A wide, recognizable default set across genres so the feed is full on first load.
+const SEED = [
+  "Phish", "Goose", "Khruangbin", "Vampire Weekend", "The Roots", "JID",
+  "Kamasi Washington", "Robert Glasper", "BadBadNotGood", "Tom Misch", "Yussef Dayes",
+  "Brian Blade", "Maggie Rogers", "Vulfpeck", "Anderson .Paak", "Hiatus Kaiyote",
+];
 
 function fmtDate(d: string) {
   if (!d) return "";
@@ -43,6 +48,7 @@ export default function Home() {
   const [blurbs, setBlurbs] = useState<Record<string, string>>({});
   const [voicing, setVoicing] = useState<string | null>(null);
   const [sortMode, setSortMode] = useState<"soonest" | "announced">("soonest");
+  const [filterArtist, setFilterArtist] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const didAuto = useRef(false);
 
@@ -185,9 +191,21 @@ export default function Home() {
         </div>
         <div className="chips">
           {artists.map((a) => (
-            <span className="chip" key={a}>
+            <span
+              className={"chip" + (filterArtist === a ? " active" : "")}
+              key={a}
+              onClick={() => setFilterArtist(filterArtist === a ? null : a)}
+              title={filterArtist === a ? "Showing only this artist — click to show all" : "Click to filter to this artist"}
+            >
               <b>{a}</b>
-              <span className="x" onClick={() => setArtists(artists.filter((x) => x !== a))}>×</span>
+              <span
+                className="x"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setArtists(artists.filter((x) => x !== a));
+                  if (filterArtist === a) setFilterArtist(null);
+                }}
+              >×</span>
             </span>
           ))}
         </div>
@@ -195,11 +213,14 @@ export default function Home() {
           <button onClick={() => findShows()} disabled={loading || artists.length === 0}>
             {loading ? <><span className="spin" /> Finding shows…</> : "Find my shows"}
           </button>
-          <span className="muted">{artists.length} artists · saved on this device</span>
+          <span className="muted">{artists.length} artists · tap a name to filter</span>
         </div>
       </div>
 
-      {shows && shows.length > 0 && (
+      {shows && shows.length > 0 && (() => {
+        const allGroups = buildGroups(shows);
+        const groups = filterArtist ? allGroups.filter((g) => g.artist === filterArtist) : allGroups;
+        return (
         <>
           <div className="sortbar">
             <button
@@ -214,9 +235,16 @@ export default function Home() {
             >
               ✨ Just announced
             </button>
+            <span className="resultcount">
+              {filterArtist ? (
+                <>Showing <b>{filterArtist}</b> · <a onClick={() => setFilterArtist(null)}>show all {allGroups.length}</a></>
+              ) : (
+                <>{allGroups.length} artists with shows</>
+              )}
+            </span>
           </div>
           <div className="cards">
-            {buildGroups(shows).map((g, gi) => {
+            {groups.map((g, gi) => {
               const soonest = g.shows[0];
               const featLabel = sortMode === "announced" ? "✨ New" : "🔥 Soon";
               return (
@@ -259,7 +287,8 @@ export default function Home() {
             })}
           </div>
         </>
-      )}
+        );
+      })()}
 
       {shows && shows.length === 0 && (
         <div className="empty">No upcoming shows found for these artists near {CITY_OPTS.find((c) => c[0] === city)?.[1]}. Try adding more artists or another city.</div>

@@ -1,11 +1,19 @@
 {
   "version": 1,
   "providers": {
+    "elevenlabs": {
+      "name": "ElevenLabs"
+    },
     "openrouter": {
       "name": "OpenRouter"
     }
   },
   "resources": {
+    "elevenlabs-tts": {
+      "name": "elevenlabs-tts",
+      "providerName": "ElevenLabs",
+      "serviceId": "tts"
+    },
     "openrouter-api": {
       "name": "openrouter-api",
       "providerName": "OpenRouter",

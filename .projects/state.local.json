@@ -8,6 +8,16 @@
     "projectName": "first-dibs"
   },
   "providers": {
+    "elevenlabs": {
+      "accountRequestId": "facctrq_61UxVgMfI2sChzSie16TSbXt9ySQvuhHxVw3nJ1I07SS",
+      "configuration": {},
+      "linkedAt": "2026-06-30T19:53:48.384Z",
+      "providerId": "prvdr_61UYtnmm5DvySq8Ol56tE",
+      "providerName": "ElevenLabs",
+      "redirectUrl": null,
+      "requestedAt": "2026-06-30T19:53:48.384Z",
+      "status": "complete"
+    },
     "openrouter": {
       "accountRequestId": "facctrq_61UxVRZlun3o9Np6s16TSbXt9ySQvuhHxVw3nJ1I0MBM",
       "configuration": {},
@@ -20,6 +30,17 @@
     }
   },
   "resources": {
+    "elevenlabs-tts": {
+      "configuration": {},
+      "createdAt": "2026-06-30T19:53:49.652Z",
+      "lastRevealedAt": "2026-06-30T19:53:49.894Z",
+      "lastStatus": "complete",
+      "name": "elevenlabs-tts",
+      "providerId": "prvdr_61UYtnmm5DvySq8Ol56tE",
+      "providerName": "ElevenLabs",
+      "resourceId": "fres_61UxVgSR8Kw9KlGJZ16TSbXt9ySQvuhHxVw3nJ1I09aK",
+      "serviceId": "tts"
+    },
     "openrouter-api": {
       "configuration": {},
       "createdAt": "2026-06-30T19:38:29.861Z",

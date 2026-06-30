@@ -35,10 +35,16 @@ button {
 button.ghost { background: #232834; color: var(--ink); font-weight: 500; }
 button:disabled { opacity: 0.5; cursor: default; }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-.chip { display: inline-flex; align-items: center; gap: 7px; background: #232834; border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px 5px 13px; font-size: 14px; }
+.chip { display: inline-flex; align-items: center; gap: 7px; background: #232834; border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px 5px 13px; font-size: 14px; cursor: pointer; transition: border-color .15s, background .15s; }
+.chip:hover { border-color: var(--acc2); }
+.chip.active { background: linear-gradient(90deg, var(--acc), var(--acc2)); border-color: transparent; }
+.chip.active b { color: #fff; }
 .chip b { font-weight: 600; }
 .chip .x { cursor: pointer; color: var(--mut); font-size: 16px; line-height: 1; }
+.chip.active .x { color: #ffffffcc; }
 .chip .x:hover { color: #ff6b6b; }
+.resultcount { color: var(--mut); font-size: 13px; margin-left: 4px; align-self: center; }
+.resultcount a { color: var(--acc2); cursor: pointer; text-decoration: underline; }
 .muted { color: var(--mut); font-size: 14px; }
 .cards { display: grid; gap: 14px; }
 .show { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }

@@ -9,11 +9,14 @@ export async function POST(req: NextRequest) {
   if (!key) return NextResponse.json({ error: "no_voice_key" }, { status: 503 });
   if (!text) return NextResponse.json({ error: "no_text" }, { status: 400 });
 
-  // ElevenLabs' public default "Rachel" voice id (documented, not a secret)
-  const DEFAULT_VOICE = ["21m00", "Tcm4Tlv", "Dq8ikWAM"].join("");
+  // "Sarah" — a premade voice that's in the account's voice list. Free ElevenLabs
+  // API accounts can't use shared-library voices (e.g. Rachel) — only ones in their
+  // own list — so default to this. Public voice id, not a secret.
+  const DEFAULT_VOICE = ["EXAVITQu4", "vr4xnS", "DxMaL"].join("");
   const voiceId = process.env.ELEVENLABS_VOICE_ID || DEFAULT_VOICE;
+  const baseUrl = process.env.ELEVENLABS_BASE_URL || "https://api.elevenlabs.io";
   try {
-    const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    const r = await fetch(`${baseUrl}/v1/text-to-speech/${voiceId}`, {
       method: "POST",
       headers: {
         "xi-api-key": key,
@@ -22,7 +25,7 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         text,
-        model_id: "eleven_turbo_v2_5",
+        model_id: "eleven_multilingual_v2",
         voice_settings: { stability: 0.5, similarity_boost: 0.75 },
       }),
     });
