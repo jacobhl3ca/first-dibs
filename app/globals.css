@@ -45,6 +45,16 @@ button:disabled { opacity: 0.5; cursor: default; }
 .chip .x:hover { color: #ff6b6b; }
 .resultcount { color: var(--mut); font-size: 13px; margin-left: 4px; align-self: center; }
 .resultcount a { color: var(--acc2); cursor: pointer; text-decoration: underline; }
+.chip.dim { opacity: 0.45; }
+.chip.dim.active { opacity: 1; }
+.link { color: var(--acc2); cursor: pointer; text-decoration: underline; }
+/* typeahead */
+.ac { position: relative; flex: 1; min-width: 180px; display: flex; }
+.ac input { flex: 1; }
+.ac-list { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 20; background: #12151d; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; box-shadow: 0 12px 30px -10px #000a; }
+.ac-item { padding: 10px 13px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #1d212b; }
+.ac-item:last-child { border-bottom: 0; }
+.ac-item:hover { background: #1b2030; color: var(--acc2); }
 .muted { color: var(--mut); font-size: 14px; }
 .cards { display: grid; gap: 14px; }
 .show { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
