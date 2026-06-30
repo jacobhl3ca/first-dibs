@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "project": {
+    "initializedAt": "2026-06-30T19:33:22.111Z",
+    "merchantDisplayName": "Jacob Heifetz-Licht",
+    "merchantId": "acct_1SJDaX9UsXeTySmA",
+    "projectId": "project_61UxVMfWPpFURK8eG16TSbXt9ySQvuhHxVw3nJ1I0El6",
+    "projectName": "first-dibs"
+  },
+  "providers": {
+    "openrouter": {
+      "accountRequestId": "facctrq_61UxVRZlun3o9Np6s16TSbXt9ySQvuhHxVw3nJ1I0MBM",
+      "configuration": {},
+      "linkedAt": "2026-06-30T19:38:26.665Z",
+      "providerId": "prvdr_61URImmFACEuDHEx651IO",
+      "providerName": "OpenRouter",
+      "redirectUrl": null,
+      "requestedAt": "2026-06-30T19:38:26.665Z",
+      "status": "complete"
+    }
+  },
+  "resources": {
+    "openrouter-api": {
+      "configuration": {},
+      "createdAt": "2026-06-30T19:38:29.861Z",
+      "lastRevealedAt": "2026-06-30T19:38:30.902Z",
+      "lastStatus": "complete",
+      "name": "openrouter-api",
+      "providerId": "prvdr_61URImmFACEuDHEx651IO",
+      "providerName": "OpenRouter",
+      "resourceId": "fres_61UxVRcK551knORHK16TSbXt9ySQvuhHxVw3nJ1I0CwC",
+      "serviceId": "api"
+    }
+  }
+}
