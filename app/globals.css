@@ -1,0 +1,71 @@
+:root {
+  --bg: #0f1115;
+  --card: #171a21;
+  --ink: #eef0f3;
+  --mut: #9aa1ac;
+  --acc: #635bff;
+  --acc2: #8b5cf6;
+  --line: #262b35;
+  --good: #2ecc71;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: radial-gradient(1200px 600px at 50% -10%, #1c1640 0%, var(--bg) 55%);
+  color: var(--ink);
+  font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100vh;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+.hero h1 { font-size: 34px; margin: 0 0 6px; letter-spacing: -0.5px; }
+.hero h1 .dib { background: linear-gradient(90deg, var(--acc), var(--acc2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p { color: var(--mut); margin: 0 0 26px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin-bottom: 22px; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+input, select {
+  background: #0c0e13; color: var(--ink); border: 1px solid var(--line);
+  border-radius: 9px; padding: 10px 12px; font-size: 15px; outline: none;
+}
+input:focus, select:focus { border-color: var(--acc); }
+input { flex: 1; min-width: 180px; }
+button {
+  background: linear-gradient(90deg, var(--acc), var(--acc2)); color: #fff; border: 0;
+  border-radius: 9px; padding: 10px 16px; font-size: 15px; font-weight: 600; cursor: pointer;
+}
+button.ghost { background: #232834; color: var(--ink); font-weight: 500; }
+button:disabled { opacity: 0.5; cursor: default; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.chip { display: inline-flex; align-items: center; gap: 7px; background: #232834; border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px 5px 13px; font-size: 14px; }
+.chip b { font-weight: 600; }
+.chip .x { cursor: pointer; color: var(--mut); font-size: 16px; line-height: 1; }
+.chip .x:hover { color: #ff6b6b; }
+.muted { color: var(--mut); font-size: 14px; }
+.cards { display: grid; gap: 14px; }
+.show { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+.show.feat { border-color: #4b3fa6; box-shadow: 0 0 0 1px #4b3fa655, 0 8px 30px -12px #635bff55; }
+.badge { position: absolute; top: -10px; left: 16px; background: linear-gradient(90deg, var(--acc), var(--acc2)); color: #fff; font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.showtimes { display: grid; gap: 7px; margin-top: 12px; }
+.st { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); background: #0e1117; border: 1px solid var(--line); border-radius: 9px; padding: 9px 12px; transition: border-color .15s, background .15s; }
+.st:hover { border-color: var(--acc); background: #12151d; }
+.st-date { font-weight: 600; color: var(--acc2); min-width: 64px; font-size: 14px; }
+.st-venue { flex: 1; color: var(--mut); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.st-right { display: flex; align-items: center; gap: 8px; }
+.st-price { color: #e6b450; font-size: 13px; font-weight: 600; }
+.st-src { font-size: 11px; color: var(--good); background: #14271a; border-radius: 5px; padding: 1px 6px; }
+.st-go { font-size: 13px; font-weight: 600; color: var(--acc2); }
+.show .top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.show .artist { font-size: 18px; font-weight: 700; }
+.show .date { color: var(--acc2); font-weight: 600; white-space: nowrap; }
+.show .venue { color: var(--mut); margin-top: 2px; }
+.tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.tag { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: #232834; color: var(--mut); }
+.tag.src { background: #1b2a1f; color: var(--good); }
+.tag.price { background: #2a2417; color: #e6b450; }
+.blurb { margin-top: 12px; font-style: italic; color: #d7dbe2; min-height: 0; }
+.actions { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
+.actions a { color: var(--acc2); text-decoration: none; font-size: 14px; font-weight: 600; }
+.actions a:hover { text-decoration: underline; }
+.spin { display: inline-block; width: 15px; height: 15px; border: 2px solid #ffffff55; border-top-color: #fff; border-radius: 50%; animation: s 0.7s linear infinite; vertical-align: -2px; }
+@keyframes s { to { transform: rotate(360deg); } }
+.empty { text-align: center; color: var(--mut); padding: 40px 0; }
+.foot { text-align: center; color: var(--mut); font-size: 13px; margin-top: 30px; }
