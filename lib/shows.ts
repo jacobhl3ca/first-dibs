@@ -28,10 +28,23 @@ export const CITIES: Record<string, { label: string; lat: number; lon: number }>
 
 const RADIUS_MI = 75;
 
+const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+// tributes/cover acts pollute keyword search ("Almost Taylor" for "Taylor Swift")
+const TRIBUTE_RE = /\btribute\b|unofficial|cover band|sing ?along|songbook|\bvs\b|experience the music of|celebrat/;
+// true only if one of the listed acts IS the queried artist (exact, normalized), not just a substring
+function isRealMatch(query: string, acts: string[], title: string): boolean {
+  if (TRIBUTE_RE.test(norm(title))) return false;
+  const q = norm(query);
+  const named = acts.map(norm).filter(Boolean);
+  if (named.length) return named.some((n) => n === q);
+  return norm(title).includes(q); // no act list → fall back to title contains
+}
+
 async function tmEvents(artist: string, lat: number, lon: number): Promise<Show[]> {
   const key = process.env.TM_API_KEY;
   if (!key) return [];
-  const now = new Date().toISOString().replace(/\.\d+Z$/, "Z");
+  // round to start of day so the URL is stable → fetch cache actually hits
+  const now = new Date().toISOString().slice(0, 10) + "T00:00:00Z";
   const u = new URL("https://app.ticketmaster.com/discovery/v2/events.json");
   u.search = new URLSearchParams({
     apikey: key,
@@ -45,17 +58,14 @@ async function tmEvents(artist: string, lat: number, lon: number): Promise<Show[
     startDateTime: now,
   }).toString();
   try {
-    const r = await fetch(u, { cache: "no-store" });
+    const r = await fetch(u, { next: { revalidate: 300 } });
     const j = await r.json();
     const events = j?._embedded?.events ?? [];
     const out: Show[] = [];
     for (const e of events) {
       const name: string = e.name ?? "";
       const atts: string[] = (e._embedded?.attractions ?? []).map((a: any) => a.name ?? "");
-      const hit =
-        name.toLowerCase().includes(artist.toLowerCase()) ||
-        atts.some((a) => a.toLowerCase().includes(artist.toLowerCase()));
-      if (!hit) continue;
+      if (!isRealMatch(artist, atts, name)) continue;
       const v = e._embedded?.venues?.[0] ?? {};
       let price: number | null = null;
       const pr = e.priceRanges?.[0];
@@ -82,7 +92,7 @@ async function tmEvents(artist: string, lat: number, lon: number): Promise<Show[
 async function sgEvents(artist: string, lat: number, lon: number): Promise<Show[]> {
   const id = process.env.SEATGEEK_CLIENT_ID;
   if (!id) return [];
-  const now = new Date().toISOString().slice(0, 19);
+  const now = new Date().toISOString().slice(0, 10) + "T00:00:00";
   const u = new URL("https://api.seatgeek.com/2/events");
   u.search = new URLSearchParams({
     client_id: id,
@@ -95,17 +105,14 @@ async function sgEvents(artist: string, lat: number, lon: number): Promise<Show[
     "datetime_utc.gte": now,
   }).toString();
   try {
-    const r = await fetch(u, { cache: "no-store" });
+    const r = await fetch(u, { next: { revalidate: 300 } });
     const j = await r.json();
     const events = j?.events ?? [];
     const out: Show[] = [];
     for (const e of events) {
       const title: string = e.title ?? "";
       const perfs: string[] = (e.performers ?? []).map((p: any) => p.name ?? "");
-      const hit =
-        title.toLowerCase().includes(artist.toLowerCase()) ||
-        perfs.some((p) => p.toLowerCase().includes(artist.toLowerCase()));
-      if (!hit) continue;
+      if (!isRealMatch(artist, perfs, title)) continue;
       out.push({
         id: "sg_" + e.id,
         artist,

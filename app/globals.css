@@ -82,10 +82,38 @@ a.artist:hover { color: var(--acc2); text-decoration: underline; cursor: pointer
 .tag.src { background: #1b2a1f; color: var(--good); }
 .tag.price { background: #2a2417; color: #e6b450; }
 .blurb { margin-top: 12px; font-style: italic; color: #d7dbe2; min-height: 0; }
-.actions { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
+.actions { display: flex; gap: 8px; margin-top: 12px; align-items: center; flex-wrap: wrap; }
+.social { font-size: 13px; font-weight: 600; text-decoration: none; padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); color: var(--ink); background: #1b1f28; }
+.social:hover { border-color: var(--acc2); }
+.social.sp:hover { color: #1db954; border-color: #1db954; }
+.social.yt:hover { color: #ff4d4d; border-color: #ff4d4d; }
+.social.ig:hover { color: #e1306c; border-color: #e1306c; }
 .actions a { color: var(--acc2); text-decoration: none; font-size: 14px; font-weight: 600; }
 .actions a:hover { text-decoration: underline; }
 .spin { display: inline-block; width: 15px; height: 15px; border: 2px solid #ffffff55; border-top-color: #fff; border-radius: 50%; animation: s 0.7s linear infinite; vertical-align: -2px; }
 @keyframes s { to { transform: rotate(360deg); } }
 .empty { text-align: center; color: var(--mut); padding: 40px 0; }
 .foot { text-align: center; color: var(--mut); font-size: 13px; margin-top: 30px; }
+
+/* ---- mobile ---- */
+@media (max-width: 600px) {
+  body { padding: 22px 0 50px; }
+  .wrap { padding: 0 12px; }
+  .hero h1 { font-size: 26px; }
+  .hero p { font-size: 14px; }
+  .panel { padding: 14px; }
+  .row { flex-direction: column; align-items: stretch; gap: 8px; }
+  .ac { min-width: 0; width: 100%; }
+  input, select, .ac input { width: 100%; }
+  /* showtime row: date + tags on line 1, venue wraps to its own line — never overflows */
+  .st { flex-wrap: wrap; row-gap: 4px; padding: 9px 11px; }
+  .st-date { order: 1; min-width: 56px; }
+  .st-right { order: 2; margin-left: auto; }
+  .st-venue { order: 3; flex-basis: 100%; white-space: normal; font-size: 13px; }
+  .st-go { display: none; }
+  .sortbar { flex-wrap: wrap; }
+  .resultcount { width: 100%; margin-left: 0; margin-top: 2px; }
+  .show .top { gap: 8px; }
+  .show .artist { font-size: 17px; }
+  .actions .social { padding: 8px 10px; font-size: 12px; }
+}

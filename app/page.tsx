@@ -60,8 +60,9 @@ export default function Home() {
     let list = SEED;
     let c = "nyc";
     try {
-      const s = JSON.parse(localStorage.getItem("fd_artists") || "null");
-      if (Array.isArray(s) && s.length) list = s;
+      // v3: bumped so stale short lists from earlier builds don't override the wide default
+      const s = JSON.parse(localStorage.getItem("fd_artists_v3") || "null");
+      if (Array.isArray(s) && s.length >= 3) list = s;
       c = localStorage.getItem("fd_city") || "nyc";
     } catch {}
     setArtists(list);
@@ -73,7 +74,7 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    if (artists.length) localStorage.setItem("fd_artists", JSON.stringify(artists));
+    if (artists.length) localStorage.setItem("fd_artists_v3", JSON.stringify(artists));
   }, [artists]);
   useEffect(() => {
     localStorage.setItem("fd_city", city);
@@ -336,6 +337,9 @@ export default function Home() {
                       >
                         {voicing === g.artist ? <><span className="spin" /> …</> : "🔊 Preview"}
                       </button>
+                      <a className="social sp" href={`https://open.spotify.com/search/${encodeURIComponent(g.artist)}`} target="_blank" rel="noreferrer">Spotify</a>
+                      <a className="social yt" href={`https://www.youtube.com/results?search_query=${encodeURIComponent(g.artist + " live")}`} target="_blank" rel="noreferrer">YouTube</a>
+                      <a className="social ig" href={`https://www.instagram.com/explore/search/keyword/?q=${encodeURIComponent(g.artist)}`} target="_blank" rel="noreferrer">Instagram</a>
                     </div>
                   </div>
                 );
@@ -352,7 +356,7 @@ export default function Home() {
       <div className="foot">
         Real data from Ticketmaster + SeatGeek
         <br />
-        built with Stripe Projects for <b>Ship &rsquo;26</b>
+        Built with Stripe Projects for <b>Ship &rsquo;26</b>
         <br />
         In ~20 minutes by <a href="https://jacobhl.com" target="_blank" rel="noreferrer">Jacob</a>
       </div>
